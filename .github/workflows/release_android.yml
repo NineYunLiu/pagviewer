@@ -1,0 +1,71 @@
+name: Android 发布
+on:
+    workflow_dispatch:
+        inputs:
+            #            logLevel:
+            #                description: 'Log level'
+            #                required: true
+            #                default: 'info'
+            #                type: choice
+            #                options:
+            #                    - info
+            #                    - warning
+            #                    - debug
+            desc:
+                description: 'Desc'
+                required: true
+                type: string
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            # 检出当前分支
+            -   name: ===✈️✈️✈️ 检出分支 ===
+                uses: actions/checkout@v3
+            # 删除无用或可能造成关联的文件
+            -   name: ===♻️♻️♻️ 删除无用或可能造成关联的文件 ===
+                run: rm -fr .git ios README.md docs devtools_options.yaml .fvmrc obs.sh obs_tools.jar .gitignore .metadata obs_tools.cfg analysis_options.yaml .github/workflows/release_android.yml new_pkg.sh ./android/.gitignore ./android/local.properties
+            # 列出所有文件，用于检查分析是否可能存在关联
+            -   name: ===📃📃📃 删除无用或可能造成关联的文件 ===
+                run: find . -type f
+
+            -   name: ===☕️☕️☕️ 安装Java开发环境 ===
+                uses: actions/setup-java@v3
+                with:
+                    distribution: 'zulu'
+                    java-version: '17'
+            # 设置 Flutter 环境
+            -   name: ===🤖🤖🤖 安装Flutter开发环境 ===
+                uses: subosito/flutter-action@v2
+                with:
+                    flutter-version: '3.19.6'
+            #
+            # 获取分支名称
+            -   name: ===🆚🆚🆚 设置环境变量和配置 ===
+                id: vars
+                run: echo "branch_name=${GITHUB_REF##*/}" >> $GITHUB_ENV; echo "TIMESTAMP=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
+            #
+            -   run: flutter config --no-cli-animations
+            -   run: flutter --version
+            #
+            # 运行 Flutter 的 pub get 来获取依赖
+            -   name: ===🔨🔨🔨开始编译 ===
+                run: flutter pub get
+            # 编译 APK 文件
+            -   name: ======== 编译aab ========
+                run: flutter build appbundle  --obfuscate --split-debug-info=./obfuscate
+            -   name: ======== 编译apk ========
+                run: flutter build apk --obfuscate --split-debug-info=./obfuscate_apk
+
+            # 重命名 APK 文件为对应的分支名
+            -   name: ===✅✅✅ 拷贝构建文件 ✅✅✅ ===
+                run: mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/${{env.branch_name}}_${{github.run_number}}.aab; mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/${{env.branch_name}}_${{github.run_number}}.apk
+
+            -   uses: ncipollo/release-action@v1
+                with:
+                    artifacts: "obfuscate/*,build/app/outputs/bundle/release/${{env.branch_name}}_${{github.run_number}}.aab,build/app/outputs/flutter-apk/${{env.branch_name}}_${{github.run_number}}.apk"
+                    tag: ${{env.branch_name}}-${{github.run_number}}
+                    body: "${{inputs.desc}}"
+#                    token: ${{ secrets.YOUR_GITHUB_TOKEN }}
