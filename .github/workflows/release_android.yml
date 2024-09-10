@@ -1,6 +1,7 @@
 name: Android 发布
+concurrency: production
+
 on:
-    concurrency: production
     workflow_dispatch:
         inputs:
             #            logLevel:
