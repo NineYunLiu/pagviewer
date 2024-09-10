@@ -35,7 +35,8 @@ jobs:
 #                    encodedString: ${{ env.KEYSTORE_BASE64 }}
             -   name: ==🔑🔑🔑 生成key.properties ===
                 run: |
-                    echo "storeFile=${{ vars.KEYSTORE_BASE64 }}" > android/key.properties
+                    echo "${{ vars.KEYSTORE_BASE64 }}" | base64 -d > android/sign.jks
+                    echo "storeFile=sign.jks" > android/key.properties
                     echo "storePassword=${{ vars.STORE_PASSWORD }}" >> android/key.properties
                     echo "keyAlias=${{ vars.KEY_ALIAS }}" >> android/key.properties
                     cat android/key.properties
