@@ -35,9 +35,9 @@ jobs:
 #                    encodedString: ${{ env.KEYSTORE_BASE64 }}
             -   name: ==🔑🔑🔑 生成key.properties ===
                 run: |
-                    echo "storeFile=${{ KEYSTORE_BASE64 }}" > android/key.properties
-                    echo "storePassword=${{ STORE_PASSWORD }}" >> android/key.properties
-                    echo "keyAlias=${{ KEY_ALIAS }}" >> android/key.properties
+                    echo "storeFile=${{ vars.KEYSTORE_BASE64 }}" > android/key.properties
+                    echo "storePassword=${{ vars.STORE_PASSWORD }}" >> android/key.properties
+                    echo "keyAlias=${{ vars.KEY_ALIAS }}" >> android/key.properties
                     cat android/key.properties
 
             # 删除无用或可能造成关联的文件
