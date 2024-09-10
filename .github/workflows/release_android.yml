@@ -29,13 +29,12 @@ jobs:
                 uses: timheuer/base64-to-file@v1.0.3
                 with:
                     fileName: keystore.jks
-                    encodedString: ${{ secrets.KEYSTORE_BASE64 }}
+                    encodedString: ${{ env.KEYSTORE_BASE64 }}
             -   name: ==🔑🔑🔑 生成key.properties ===
                 run: |
                     echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
-                    echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
-                    echo "keyPassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
-                    echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+                    echo "storePassword=${{ env.STORE_PASSWORD }}" >> android/key.properties
+                    echo "keyAlias=${{ env.KEY_ALIAS }}" >> android/key.properties
                     cat android/key.properties
 
             # 删除无用或可能造成关联的文件
@@ -80,4 +79,3 @@ jobs:
                     artifacts: "obfuscate/*,build/app/outputs/bundle/release/${{env.branch_name}}_${{github.run_number}}.aab"
                     tag: ${{env.branch_name}}-${{github.run_number}}
                     body: "${{inputs.desc}}"
-#                    token: ${{ secrets.YOUR_GITHUB_TOKEN }}
