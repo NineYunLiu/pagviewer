@@ -36,6 +36,7 @@ jobs:
                     echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
                     echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
                     echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+                    cat android/key.properties
 
             # 删除无用或可能造成关联的文件
             -   name: ===♻️♻️♻️ 删除无用或可能造成关联的文件 ===
