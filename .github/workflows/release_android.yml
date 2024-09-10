@@ -24,15 +24,15 @@ jobs:
             # 检出当前分支
             -   name: ===✈️✈️✈️ 检出分支 ===
                 uses: actions/checkout@v3
-            -   name: ===🔑🔑🔑 检出和配置秘钥 ===
-                id: android_keystore
-                uses: timheuer/base64-to-file@v1.0.3
-                with:
-                    fileName: keystore.jks
-                    encodedString: ${{ env.KEYSTORE_BASE64 }}
+#            -   name: ===🔑🔑🔑 检出和配置秘钥 ===
+#                id: android_keystore
+#                uses: timheuer/base64-to-file@v1.0.3
+#                with:
+#                    fileName: keystore.jks
+#                    encodedString: ${{ env.KEYSTORE_BASE64 }}
             -   name: ==🔑🔑🔑 生成key.properties ===
                 run: |
-                    echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+                    echo "storeFile=${{ env.KEYSTORE_BASE64 }}" > android/key.properties
                     echo "storePassword=${{ env.STORE_PASSWORD }}" >> android/key.properties
                     echo "keyAlias=${{ env.KEY_ALIAS }}" >> android/key.properties
                     cat android/key.properties
