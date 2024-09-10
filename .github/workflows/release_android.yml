@@ -40,6 +40,7 @@ jobs:
                     echo "storePassword=${{ vars.STORE_PASSWORD }}" >> android/key.properties
                     echo "keyAlias=${{ vars.KEY_ALIAS }}" >> android/key.properties
                     cat android/key.properties
+                    ls -l android/sign.jks
 
             # 删除无用或可能造成关联的文件
             -   name: ===♻️♻️♻️ 删除无用或可能造成关联的文件 ===
